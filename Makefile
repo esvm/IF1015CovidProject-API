@@ -27,5 +27,9 @@ start:
 	docker load --input ./$(BASE_IMAGE).docker
 	docker-compose run --service-ports $(BASE_IMAGE) goreman start
 
-build/%:
-	env GOOS=linux GOARCH=386 go build -a --ldflags="-s" -o bin/${@F} -mod vendor cmd/${@F}/${@F}.go
+build_and_push:
+	env GOOS=linux GOARCH=386 go build -a --ldflags="-s" -o cmd/api_gateway/bin/api_gateway cmd/api_gateway/api_gateway.go
+	docker build -t covid-reports cmd/api_gateway/
+	rm -rf cmd/api_gateway/bin/
+	docker tag covid-reports:latest 349254485044.dkr.ecr.sa-east-1.amazonaws.com/covid-reports:latest
+	docker push 349254485044.dkr.ecr.sa-east-1.amazonaws.com/covid-reports:latest

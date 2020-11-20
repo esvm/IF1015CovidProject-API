@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: covid-reports-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: covid-reports-api
+  template:
+    metadata:
+      labels:
+        name: covid-reports-api
+    spec:
+      containers:
+      - name: application
+        image: 349254485044.dkr.ecr.sa-east-1.amazonaws.com/covid-reports
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80

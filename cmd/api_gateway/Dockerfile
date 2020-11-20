@@ -1,5 +1,5 @@
 FROM alpine:latest
 RUN apk add --update ca-certificates
-COPY bin/covid_report /
-RUN chmod +x covid_report
-ENTRYPOINT ["/covid_report"]
+COPY bin/api_gateway /
+RUN chmod +x api_gateway
+ENTRYPOINT ["/api_gateway"]
