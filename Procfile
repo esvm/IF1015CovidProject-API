@@ -1,1 +1,1 @@
-web: go run cmd/api_gateway/api_gateway.go
+web: bin/api_gateway
