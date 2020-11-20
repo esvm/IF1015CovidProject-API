@@ -1,0 +1,1 @@
+web: go run cmd/api_gateway/api_gateway.go

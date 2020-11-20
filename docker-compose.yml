@@ -1,0 +1,35 @@
+version: "3.5"
+services:
+  db:
+    image: postgres
+    container_name: api-starter-golang_db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DATABASE=database
+    volumes:
+      - ./src/covid_report_service/store/postgres/schema.sql:/src/covid_report_service/store/postgres/schema.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - api-network
+
+  api-starter-golang:
+    image: api-starter-golang
+    build: .
+    ports:
+      - "80:80"
+    depends_on:
+      - "db"
+    env_file:
+      - .env
+    environment:
+      - COVID_REPORT_DATABASE_ADDRESS=api-starter-golang_db
+    networks:
+      - api-network
+    ports:
+      - 80:80
+
+networks:
+  api-network:
+    driver: bridge
