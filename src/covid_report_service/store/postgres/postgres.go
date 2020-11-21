@@ -20,8 +20,9 @@ type BasicDatabase interface {
 type CovidReportDatabase interface {
 	BasicDatabase
 
-	InsertCovidReports([]*covid_reports.CovidReport) error
-	GetCovidReports() ([]*covid_reports.CovidReport, error)
+	InsertCovidReportsBrazil([]*covid_reports.CovidReportBrazilState) error
+	InsertCovidReportsCountries([]*covid_reports.CovidReportCountry) error
+	GetCovidReportsBrazil() ([]*covid_reports.CovidReportBrazilState, error)
 }
 
 type covidReportDatabase struct {
@@ -63,17 +64,38 @@ func (d covidReportDatabase) GetConnection() *pg.DB {
 	return connection
 }
 
-func (d covidReportDatabase) InsertCovidReports(covidReports []*covid_reports.CovidReport) error {
+func (d covidReportDatabase) InsertCovidReportsBrazil(covidReports []*covid_reports.CovidReportBrazilState) error {
 	db := d.GetConnection()
 
 	_, err := db.Model(&covidReports).Insert()
+	if err != nil {
+		pgErr, _ := err.(pg.Error)
+		if pgErr.IntegrityViolation() {
+			return nil
+		}
+	}
+
 	return err
 }
 
-func (d covidReportDatabase) GetCovidReports() ([]*covid_reports.CovidReport, error) {
+func (d covidReportDatabase) InsertCovidReportsCountries(covidReports []*covid_reports.CovidReportCountry) error {
 	db := d.GetConnection()
 
-	covidReports := []*covid_reports.CovidReport{}
+	_, err := db.Model(&covidReports).Insert()
+	if err != nil {
+		pgErr, _ := err.(pg.Error)
+		if pgErr.IntegrityViolation() {
+			return nil
+		}
+	}
+
+	return err
+}
+
+func (d covidReportDatabase) GetCovidReportsBrazil() ([]*covid_reports.CovidReportBrazilState, error) {
+	db := d.GetConnection()
+
+	covidReports := []*covid_reports.CovidReportBrazilState{}
 	if err := db.Model(&covidReports).Select(); err != nil {
 		return nil, errors.Wrap(err, "Failed to select Covid Reports")
 	}

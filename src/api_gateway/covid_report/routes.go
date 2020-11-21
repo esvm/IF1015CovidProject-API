@@ -15,8 +15,9 @@ const (
 
 	EntryPoint = "/reports"
 
-	GetCovidReportsRoute    = "/"
-	InsertCovidReportsRoute = "/"
+	GetCovidReportsBrazilRoute          = "/brazil"
+	InsertCovidReportsBrazilStatesRoute = "/brazil"
+	InsertCovidReportsCountriesRoute    = "/countries"
 )
 
 type CovidReportAPI struct {
@@ -30,20 +31,25 @@ func MakeCovidReportRoutes(
 	api := &CovidReportAPI{covidService}
 
 	g.GET(
-		GetCovidReportsRoute,
-		api.GetCovidReportsHandler,
-		instrumentingMiddleware("GetCovidReports"),
+		GetCovidReportsBrazilRoute,
+		api.GetCovidReportsBrazilHandler,
+		instrumentingMiddleware("GetCovidReportsBrazil"),
 	)
 	g.POST(
-		InsertCovidReportsRoute,
-		api.InsertCovidReportsHandler,
-		instrumentingMiddleware("InsertCovidReports"),
+		InsertCovidReportsBrazilStatesRoute,
+		api.InsertCovidReportsBrazilHandler,
+		instrumentingMiddleware("InsertCovidReportsBrazilStatesRoute"),
+	)
+	g.POST(
+		InsertCovidReportsCountriesRoute,
+		api.InsertCovidReportsCountriesHandler,
+		instrumentingMiddleware("InsertCovidReportsCountriesRoute"),
 	)
 }
 
-func (api *CovidReportAPI) GetCovidReportsHandler(ctx echo.Context) error {
+func (api *CovidReportAPI) GetCovidReportsBrazilHandler(ctx echo.Context) error {
 	c := context.GetContext(ctx)
-	reports, err := api.covidService.GetCovidReports(c)
+	reports, err := api.covidService.GetCovidReportsBrazil(c)
 	if err != nil {
 		return &echo.HTTPError{
 			Code:    http.StatusInternalServerError,
@@ -59,15 +65,31 @@ func (api *CovidReportAPI) GetCovidReportsHandler(ctx echo.Context) error {
 	return ctx.Blob(http.StatusOK, contentType, body)
 }
 
-func (api *CovidReportAPI) InsertCovidReportsHandler(ctx echo.Context) error {
-	reports, err := UnmarshalCovidReport(ctx)
+func (api *CovidReportAPI) InsertCovidReportsBrazilHandler(ctx echo.Context) error {
+	reports, err := UnmarshalCovidReportBrazil(ctx)
 	if err != nil {
 		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "Failed to parse body"}
 	}
 
 	c := context.GetContext(ctx)
 
-	err = api.covidService.InsertCovidReports(c, reports)
+	err = api.covidService.InsertCovidReportsBrazil(c, reports)
+	if err != nil {
+		return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "Covid Report service failed"}
+	}
+
+	return ctx.NoContent(http.StatusCreated)
+}
+
+func (api *CovidReportAPI) InsertCovidReportsCountriesHandler(ctx echo.Context) error {
+	reports, err := UnmarshalCovidReportCountries(ctx)
+	if err != nil {
+		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "Failed to parse body"}
+	}
+
+	c := context.GetContext(ctx)
+
+	err = api.covidService.InsertCovidReportsCountries(c, reports)
 	if err != nil {
 		return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "Covid Report service failed"}
 	}

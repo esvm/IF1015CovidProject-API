@@ -7,8 +7,9 @@ import (
 )
 
 type Store interface {
-	InsertCovidReports([]*covid_reports.CovidReport) error
-	GetCovidReports() ([]*covid_reports.CovidReport, error)
+	InsertCovidReportsBrazil([]*covid_reports.CovidReportBrazilState) error
+	InsertCovidReportsCountries([]*covid_reports.CovidReportCountry) error
+	GetCovidReportsBrazil() ([]*covid_reports.CovidReportBrazilState, error)
 }
 
 type basicStore struct {
@@ -19,12 +20,17 @@ func New(logger log.Logger) Store {
 	return basicStore{logger}
 }
 
-func (s basicStore) InsertCovidReports(covidReports []*covid_reports.CovidReport) error {
+func (s basicStore) InsertCovidReportsBrazil(covidReports []*covid_reports.CovidReportBrazilState) error {
 	database := postgres.NewDatabase(s.logger)
-	return database.InsertCovidReports(covidReports)
+	return database.InsertCovidReportsBrazil(covidReports)
 }
 
-func (s basicStore) GetCovidReports() ([]*covid_reports.CovidReport, error) {
+func (s basicStore) InsertCovidReportsCountries(covidReports []*covid_reports.CovidReportCountry) error {
 	database := postgres.NewDatabase(s.logger)
-	return database.GetCovidReports()
+	return database.InsertCovidReportsCountries(covidReports)
+}
+
+func (s basicStore) GetCovidReportsBrazil() ([]*covid_reports.CovidReportBrazilState, error) {
+	database := postgres.NewDatabase(s.logger)
+	return database.GetCovidReportsBrazil()
 }

@@ -2,15 +2,24 @@ package covid_reports
 
 import "time"
 
-type CovidReport struct {
-	ID       string `json:"id" sql:",pk" validate:"required"`
+type CovidReportBrazilState struct {
+	ID       string `json:"id" validate:"-"`
 	State    string `json:"state" validate:"max=10"`
 	UF       string `json:"uf" validate:"max=50"`
+	Cases    int    `json:"cases" validate:"-"`
+	Deaths   int    `json:"deaths" validate:"-"`
+	Suspects int    `json:"suspects" validate:"-"`
+	Refuses  int    `json:"refuses" validate:"-"`
+
+	UpdatedAt time.Time `json:"updated_at" validate:"-"`
+}
+
+type CovidReportCountry struct {
 	Country  string `json:"country" validate:"max=100"`
 	Cases    int    `json:"cases" validate:"-"`
 	Deaths   int    `json:"deaths" validate:"-"`
 	Suspects int    `json:"suspects" validate:"-"`
 	Refuses  int    `json:"refuses" validate:"-"`
 
-	ReportedAt time.Time `json:"reported_at" validate:"-"`
+	UpdatedAt time.Time `json:"updated_at" validate:"-"`
 }

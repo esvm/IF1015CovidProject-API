@@ -14,24 +14,36 @@ type loggingMiddleware struct {
 	next   CovidReportService
 }
 
-func (mw loggingMiddleware) InsertCovidReports(ctx context.Context, covidReport []*covid_reports.CovidReport) error {
+func (mw loggingMiddleware) InsertCovidReportsBrazil(ctx context.Context, covidReport []*covid_reports.CovidReportBrazilState) error {
 	begin := time.Now()
 
-	err := mw.next.InsertCovidReports(ctx, covidReport)
+	err := mw.next.InsertCovidReportsBrazil(ctx, covidReport)
 
-	arguments := []interface{}{"method", "InsertCovidReports", "err", err, "took", time.Since(begin)}
+	arguments := []interface{}{"method", "InsertCovidReportsBrazil", "err", err, "took", time.Since(begin)}
 
 	level.Debug(mw.logger).Log(arguments...)
 
 	return err
 }
 
-func (mw loggingMiddleware) GetCovidReports(ctx context.Context) ([]*covid_reports.CovidReport, error) {
+func (mw loggingMiddleware) InsertCovidReportsCountries(ctx context.Context, covidReport []*covid_reports.CovidReportCountry) error {
 	begin := time.Now()
 
-	res, err := mw.next.GetCovidReports(ctx)
+	err := mw.next.InsertCovidReportsCountries(ctx, covidReport)
 
-	arguments := []interface{}{"method", "GetCovidReports", "err", err, "took", time.Since(begin)}
+	arguments := []interface{}{"method", "InsertCovidReportsCountries", "err", err, "took", time.Since(begin)}
+
+	level.Debug(mw.logger).Log(arguments...)
+
+	return err
+}
+
+func (mw loggingMiddleware) GetCovidReportsBrazil(ctx context.Context) ([]*covid_reports.CovidReportBrazilState, error) {
+	begin := time.Now()
+
+	res, err := mw.next.GetCovidReportsBrazil(ctx)
+
+	arguments := []interface{}{"method", "GetCovidReportsBrazil", "err", err, "took", time.Since(begin)}
 
 	level.Debug(mw.logger).Log(arguments...)
 
