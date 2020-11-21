@@ -7,7 +7,6 @@ import (
 	"github.com/esvm/if1015covidproject-api/src/api_gateway/context"
 	"github.com/esvm/if1015covidproject-api/src/covid_report_service"
 	"github.com/labstack/echo"
-	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 const (
@@ -26,19 +25,18 @@ type CovidReportAPI struct {
 func MakeCovidReportRoutes(
 	g *echo.Group,
 	covidService covid_report_service.CovidReportService,
-	newRelicApp *newrelic.Application,
 ) {
 	api := &CovidReportAPI{covidService}
 
 	g.GET(
 		GetCovidReportsRoute,
 		api.GetCovidReportsHandler,
-		instrumentingMiddleware("GetCovidReports", newRelicApp),
+		instrumentingMiddleware("GetCovidReports"),
 	)
 	g.POST(
 		InsertCovidReportRoute,
 		api.InsertCovidReportHandler,
-		instrumentingMiddleware("InsertCovidReport", newRelicApp),
+		instrumentingMiddleware("InsertCovidReport"),
 	)
 }
 
