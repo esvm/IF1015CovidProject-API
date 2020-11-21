@@ -26,18 +26,10 @@ func NewCovidReportService(logger log.Logger) CovidReportService {
 }
 
 func (s basicService) InsertCovidReportsBrazil(ctx context.Context, reports []*covid_reports.CovidReportBrazilState) error {
-	if err := ValidateCovidReportsBrazil(reports); err != nil {
-		return err
-	}
-
 	return s.store.InsertCovidReportsBrazil(reports)
 }
 
 func (s basicService) InsertCovidReportsCountries(ctx context.Context, reports []*covid_reports.CovidReportCountry) error {
-	if err := ValidateCovidReportsCountries(reports); err != nil {
-		return err
-	}
-
 	return s.store.InsertCovidReportsCountries(reports)
 }
 

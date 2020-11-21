@@ -78,7 +78,10 @@ func (api *CovidReportAPI) InsertCovidReportsBrazilHandler(ctx echo.Context) err
 
 	err = api.covidService.InsertCovidReportsBrazil(c, reports)
 	if err != nil {
-		return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "Covid Report service failed"}
+		return &echo.HTTPError{
+			Code:    http.StatusInternalServerError,
+			Message: fmt.Sprintf("Covid Report service failed %s", err.Error()),
+		}
 	}
 
 	return ctx.NoContent(http.StatusCreated)
