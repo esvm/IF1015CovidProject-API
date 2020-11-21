@@ -63,7 +63,7 @@ func main() {
 
 	api_gateway.MakeRoutes(app, clients)
 
-	port := os.Getenv("API_GATEWAY_PORT")
+	port := os.Getenv("PORT")
 	if port == "" {
 		port = "80"
 	}
