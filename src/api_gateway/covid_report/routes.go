@@ -17,7 +17,10 @@ const (
 
 	GetCovidReportsBrazilRoute          = "/brazil"
 	InsertCovidReportsBrazilStatesRoute = "/brazil"
-	InsertCovidReportsCountriesRoute    = "/countries"
+	GetCovidReportsBrazilPerDayRoute    = "/brazil"
+
+	GetCovidReportsCountriesRoute    = "/countries"
+	InsertCovidReportsCountriesRoute = "/countries"
 )
 
 type CovidReportAPI struct {

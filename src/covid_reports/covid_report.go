@@ -3,7 +3,7 @@ package covid_reports
 import "time"
 
 type CovidReportBrazilState struct {
-	ID       string `json:"id" validate:"-"`
+	ID       string `json:"uid" pg:"id" validate:"-"`
 	State    string `json:"state" validate:"max=10"`
 	UF       string `json:"uf" validate:"max=50"`
 	Cases    int    `json:"cases" validate:"-"`
