@@ -14,16 +14,16 @@ type loggingMiddleware struct {
 	next   CovidReportService
 }
 
-func (mw loggingMiddleware) InsertCovidReport(ctx context.Context, covidReport *covid_reports.CovidReport) (*covid_reports.CovidReport, error) {
+func (mw loggingMiddleware) InsertCovidReports(ctx context.Context, covidReport []*covid_reports.CovidReport) error {
 	begin := time.Now()
 
-	res, err := mw.next.InsertCovidReport(ctx, covidReport)
+	err := mw.next.InsertCovidReports(ctx, covidReport)
 
-	arguments := []interface{}{"method", "InsertCovidReport", "err", err, "took", time.Since(begin)}
+	arguments := []interface{}{"method", "InsertCovidReports", "err", err, "took", time.Since(begin)}
 
 	level.Debug(mw.logger).Log(arguments...)
 
-	return res, err
+	return err
 }
 
 func (mw loggingMiddleware) GetCovidReports(ctx context.Context) ([]*covid_reports.CovidReport, error) {

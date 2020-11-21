@@ -11,14 +11,14 @@ type instrumentingMiddleware struct {
 	next CovidReportService
 }
 
-func (mw instrumentingMiddleware) InsertCovidReport(ctx context.Context, covidReport *covid_reports.CovidReport) (*covid_reports.CovidReport, error) {
+func (mw instrumentingMiddleware) InsertCovidReports(ctx context.Context, covidReport []*covid_reports.CovidReport) error {
 	begin := time.Now()
 
-	res, err := mw.next.InsertCovidReport(ctx, covidReport)
+	err := mw.next.InsertCovidReports(ctx, covidReport)
 
-	InsertCovidReportTotal.Add(1)
-	InsertCovidReportDuration.Observe(time.Since(begin).Seconds())
-	return res, err
+	InsertCovidReportsTotal.Add(1)
+	InsertCovidReportsDuration.Observe(time.Since(begin).Seconds())
+	return err
 }
 
 func (mw instrumentingMiddleware) GetCovidReports(ctx context.Context) ([]*covid_reports.CovidReport, error) {

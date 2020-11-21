@@ -15,8 +15,8 @@ const (
 
 	EntryPoint = "/reports"
 
-	GetCovidReportsRoute   = "/"
-	InsertCovidReportRoute = "/"
+	GetCovidReportsRoute    = "/"
+	InsertCovidReportsRoute = "/"
 )
 
 type CovidReportAPI struct {
@@ -35,9 +35,9 @@ func MakeCovidReportRoutes(
 		instrumentingMiddleware("GetCovidReports"),
 	)
 	g.POST(
-		InsertCovidReportRoute,
-		api.InsertCovidReportHandler,
-		instrumentingMiddleware("InsertCovidReport"),
+		InsertCovidReportsRoute,
+		api.InsertCovidReportsHandler,
+		instrumentingMiddleware("InsertCovidReports"),
 	)
 }
 
@@ -59,19 +59,18 @@ func (api *CovidReportAPI) GetCovidReportsHandler(ctx echo.Context) error {
 	return ctx.Blob(http.StatusOK, contentType, body)
 }
 
-func (api *CovidReportAPI) InsertCovidReportHandler(ctx echo.Context) error {
-	report, err := UnmarshalCovidReport(ctx)
+func (api *CovidReportAPI) InsertCovidReportsHandler(ctx echo.Context) error {
+	reports, err := UnmarshalCovidReport(ctx)
 	if err != nil {
 		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "Failed to parse body"}
 	}
 
 	c := context.GetContext(ctx)
 
-	created, err := api.covidService.InsertCovidReport(c, report)
+	err = api.covidService.InsertCovidReports(c, reports)
 	if err != nil {
 		return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "Covid Report service failed"}
 	}
 
-	body, _ := json.Marshal(created)
-	return ctx.Blob(http.StatusCreated, contentType, body)
+	return ctx.NoContent(http.StatusCreated)
 }

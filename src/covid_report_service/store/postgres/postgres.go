@@ -20,7 +20,7 @@ type BasicDatabase interface {
 type CovidReportDatabase interface {
 	BasicDatabase
 
-	InsertCovidReport(*covid_reports.CovidReport) (*covid_reports.CovidReport, error)
+	InsertCovidReports([]*covid_reports.CovidReport) error
 	GetCovidReports() ([]*covid_reports.CovidReport, error)
 }
 
@@ -63,23 +63,11 @@ func (d covidReportDatabase) GetConnection() *pg.DB {
 	return connection
 }
 
-func (d covidReportDatabase) InsertCovidReport(covidReport *covid_reports.CovidReport) (*covid_reports.CovidReport, error) {
+func (d covidReportDatabase) InsertCovidReports(covidReports []*covid_reports.CovidReport) error {
 	db := d.GetConnection()
 
-	tx, err := db.Begin()
-	if err != nil {
-		return nil, errors.Wrap(err, "Begin transaction failed")
-	}
-
-	err = tx.Insert(covidReport)
-	if err != nil {
-		tx.Rollback()
-		return nil, errors.Wrap(err, "Insert Covid Report query failed")
-	}
-
-	tx.Commit()
-
-	return covidReport, nil
+	_, err := db.Model(&covidReports).Insert()
+	return err
 }
 
 func (d covidReportDatabase) GetCovidReports() ([]*covid_reports.CovidReport, error) {

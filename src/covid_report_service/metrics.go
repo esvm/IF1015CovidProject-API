@@ -6,12 +6,12 @@ import (
 )
 
 var (
-	InsertCovidReportTotal = kitprometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
+	InsertCovidReportsTotal = kitprometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 		Name: "ge_covid_report_service_insert_covid_report_total",
 		Help: "Insert Covid Report requests count",
 	}, []string{})
 
-	InsertCovidReportDuration = kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
+	InsertCovidReportsDuration = kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
 		Name:       "ge_covid_report_service_insert_covid_report_duration_seconds",
 		Help:       "Insert Covid Report duration in seconds",
 		Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01},

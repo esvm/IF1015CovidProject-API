@@ -11,13 +11,13 @@ type crashMonitoringMiddleware struct {
 	next CovidReportService
 }
 
-func (mw crashMonitoringMiddleware) InsertCovidReport(ctx context.Context, covidReport *covid_reports.CovidReport) (*covid_reports.CovidReport, error) {
-	res, err := mw.next.InsertCovidReport(ctx, covidReport)
+func (mw crashMonitoringMiddleware) InsertCovidReports(ctx context.Context, covidReport []*covid_reports.CovidReport) error {
+	err := mw.next.InsertCovidReports(ctx, covidReport)
 	if err != nil {
 		rollbar.Error(err)
 	}
 
-	return res, err
+	return err
 }
 
 func (mw crashMonitoringMiddleware) GetCovidReports(ctx context.Context) ([]*covid_reports.CovidReport, error) {

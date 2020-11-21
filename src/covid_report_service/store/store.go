@@ -7,7 +7,7 @@ import (
 )
 
 type Store interface {
-	InsertCovidReport(*covid_reports.CovidReport) (*covid_reports.CovidReport, error)
+	InsertCovidReports([]*covid_reports.CovidReport) error
 	GetCovidReports() ([]*covid_reports.CovidReport, error)
 }
 
@@ -19,9 +19,9 @@ func New(logger log.Logger) Store {
 	return basicStore{logger}
 }
 
-func (s basicStore) InsertCovidReport(covidReport *covid_reports.CovidReport) (*covid_reports.CovidReport, error) {
+func (s basicStore) InsertCovidReports(covidReports []*covid_reports.CovidReport) error {
 	database := postgres.NewDatabase(s.logger)
-	return database.InsertCovidReport(covidReport)
+	return database.InsertCovidReports(covidReports)
 }
 
 func (s basicStore) GetCovidReports() ([]*covid_reports.CovidReport, error) {

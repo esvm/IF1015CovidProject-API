@@ -7,11 +7,11 @@ import (
 	"github.com/labstack/echo"
 )
 
-func UnmarshalCovidReport(ctx echo.Context) (*covid_reports.CovidReport, error) {
+func UnmarshalCovidReport(ctx echo.Context) ([]*covid_reports.CovidReport, error) {
 	req := ctx.Request()
 
-	covidReport := covid_reports.CovidReport{}
-	err := json.NewDecoder(req.Body).Decode(&covidReport)
+	covidReports := []*covid_reports.CovidReport{}
+	err := json.NewDecoder(req.Body).Decode(&covidReports)
 
-	return &covidReport, err
+	return covidReports, err
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type CovidReportService interface {
-	InsertCovidReport(context.Context, *covid_reports.CovidReport) (*covid_reports.CovidReport, error)
+	InsertCovidReports(context.Context, []*covid_reports.CovidReport) error
 	GetCovidReports(context.Context) ([]*covid_reports.CovidReport, error)
 }
 
@@ -26,12 +26,12 @@ func NewCovidReportService(logger log.Logger) CovidReportService {
 	return service
 }
 
-func (s basicService) InsertCovidReport(ctx context.Context, report *covid_reports.CovidReport) (*covid_reports.CovidReport, error) {
-	if err := ValidateCovidReport(report); err != nil {
-		return nil, err
+func (s basicService) InsertCovidReports(ctx context.Context, reports []*covid_reports.CovidReport) error {
+	if err := ValidateCovidReports(reports); err != nil {
+		return err
 	}
 
-	return s.store.InsertCovidReport(report)
+	return s.store.InsertCovidReports(reports)
 }
 
 func (s basicService) GetCovidReports(ctx context.Context) ([]*covid_reports.CovidReport, error) {

@@ -5,6 +5,11 @@ import (
 	"github.com/esvm/if1015covidproject-api/src/validation"
 )
 
-func ValidateCovidReport(report *covid_reports.CovidReport) error {
-	return validation.Validate(report)
+func ValidateCovidReports(reports []*covid_reports.CovidReport) error {
+	for _, report := range reports {
+		if err := validation.Validate(report); err != nil {
+			return err
+		}
+	}
+	return nil
 }
