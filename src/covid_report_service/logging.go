@@ -49,3 +49,15 @@ func (mw loggingMiddleware) GetCovidReportsBrazil(ctx context.Context) ([]*covid
 
 	return res, err
 }
+
+func (mw loggingMiddleware) GetCovidReportsCountries(ctx context.Context) ([]*covid_reports.CovidReportCountry, error) {
+	begin := time.Now()
+
+	res, err := mw.next.GetCovidReportsCountries(ctx)
+
+	arguments := []interface{}{"method", "GetCovidReportsCountries", "err", err, "took", time.Since(begin)}
+
+	level.Debug(mw.logger).Log(arguments...)
+
+	return res, err
+}

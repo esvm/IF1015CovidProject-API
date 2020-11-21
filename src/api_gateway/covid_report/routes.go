@@ -41,18 +41,42 @@ func MakeCovidReportRoutes(
 	g.POST(
 		InsertCovidReportsBrazilStatesRoute,
 		api.InsertCovidReportsBrazilHandler,
-		instrumentingMiddleware("InsertCovidReportsBrazilStatesRoute"),
+		instrumentingMiddleware("InsertCovidReportsBrazil"),
+	)
+
+	g.GET(
+		GetCovidReportsCountriesRoute,
+		api.GetCovidReportsCountriesHandler,
+		instrumentingMiddleware("GetCovidReportsCountries"),
 	)
 	g.POST(
 		InsertCovidReportsCountriesRoute,
 		api.InsertCovidReportsCountriesHandler,
-		instrumentingMiddleware("InsertCovidReportsCountriesRoute"),
+		instrumentingMiddleware("InsertCovidReportsCountries"),
 	)
 }
 
 func (api *CovidReportAPI) GetCovidReportsBrazilHandler(ctx echo.Context) error {
 	c := context.GetContext(ctx)
 	reports, err := api.covidService.GetCovidReportsBrazil(c)
+	if err != nil {
+		return &echo.HTTPError{
+			Code:    http.StatusInternalServerError,
+			Message: fmt.Sprintf("Covid Report service failed: %s", err.Error()),
+		}
+	}
+
+	body, err := json.Marshal(reports)
+	if err != nil {
+		return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "Failed to get covid reports"}
+	}
+
+	return ctx.Blob(http.StatusOK, contentType, body)
+}
+
+func (api *CovidReportAPI) GetCovidReportsCountriesHandler(ctx echo.Context) error {
+	c := context.GetContext(ctx)
+	reports, err := api.covidService.GetCovidReportsCountries(c)
 	if err != nil {
 		return &echo.HTTPError{
 			Code:    http.StatusInternalServerError,

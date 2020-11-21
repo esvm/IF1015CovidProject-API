@@ -10,6 +10,7 @@ type Store interface {
 	InsertCovidReportsBrazil([]*covid_reports.CovidReportBrazilState) error
 	InsertCovidReportsCountries([]*covid_reports.CovidReportCountry) error
 	GetCovidReportsBrazil() ([]*covid_reports.CovidReportBrazilState, error)
+	GetCovidReportsCountries() ([]*covid_reports.CovidReportCountry, error)
 }
 
 type basicStore struct {
@@ -33,4 +34,9 @@ func (s basicStore) InsertCovidReportsCountries(covidReports []*covid_reports.Co
 func (s basicStore) GetCovidReportsBrazil() ([]*covid_reports.CovidReportBrazilState, error) {
 	database := postgres.NewDatabase(s.logger)
 	return database.GetCovidReportsBrazil()
+}
+
+func (s basicStore) GetCovidReportsCountries() ([]*covid_reports.CovidReportCountry, error) {
+	database := postgres.NewDatabase(s.logger)
+	return database.GetCovidReportsCountries()
 }

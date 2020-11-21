@@ -12,6 +12,7 @@ type CovidReportService interface {
 	InsertCovidReportsBrazil(context.Context, []*covid_reports.CovidReportBrazilState) error
 	InsertCovidReportsCountries(context.Context, []*covid_reports.CovidReportCountry) error
 	GetCovidReportsBrazil(context.Context) ([]*covid_reports.CovidReportBrazilState, error)
+	GetCovidReportsCountries(context.Context) ([]*covid_reports.CovidReportCountry, error)
 }
 
 type basicService struct {
@@ -35,4 +36,8 @@ func (s basicService) InsertCovidReportsCountries(ctx context.Context, reports [
 
 func (s basicService) GetCovidReportsBrazil(ctx context.Context) ([]*covid_reports.CovidReportBrazilState, error) {
 	return s.store.GetCovidReportsBrazil()
+}
+
+func (s basicService) GetCovidReportsCountries(ctx context.Context) ([]*covid_reports.CovidReportCountry, error) {
+	return s.store.GetCovidReportsCountries()
 }

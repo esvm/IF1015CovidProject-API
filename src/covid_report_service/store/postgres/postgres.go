@@ -23,6 +23,7 @@ type CovidReportDatabase interface {
 	InsertCovidReportsBrazil([]*covid_reports.CovidReportBrazilState) error
 	InsertCovidReportsCountries([]*covid_reports.CovidReportCountry) error
 	GetCovidReportsBrazil() ([]*covid_reports.CovidReportBrazilState, error)
+	GetCovidReportsCountries() ([]*covid_reports.CovidReportCountry, error)
 }
 
 type covidReportDatabase struct {
@@ -96,6 +97,17 @@ func (d covidReportDatabase) GetCovidReportsBrazil() ([]*covid_reports.CovidRepo
 	db := d.GetConnection()
 
 	covidReports := []*covid_reports.CovidReportBrazilState{}
+	if err := db.Model(&covidReports).Select(); err != nil {
+		return nil, errors.Wrap(err, "Failed to select Covid Reports")
+	}
+
+	return covidReports, nil
+}
+
+func (d covidReportDatabase) GetCovidReportsCountries() ([]*covid_reports.CovidReportCountry, error) {
+	db := d.GetConnection()
+
+	covidReports := []*covid_reports.CovidReportCountry{}
 	if err := db.Model(&covidReports).Select(); err != nil {
 		return nil, errors.Wrap(err, "Failed to select Covid Reports")
 	}
