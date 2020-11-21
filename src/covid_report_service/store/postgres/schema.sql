@@ -8,4 +8,4 @@ CREATE TABLE covid_reports(
     suspects bigint,
     refuses bigint,
     reported_at timestamp with time zone
-)
+);
