@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"os/signal"
 	"strconv"
@@ -73,6 +74,13 @@ func main() {
 
 		if err := app.Start(":" + port); err != nil {
 			app.Logger.Errorf("shutting down the server: %s", err)
+		}
+	}()
+
+	go func() {
+		for {
+			time.Sleep(60 * time.Second)
+			http.Get("https://if1015covidproject-producers.herokuapp.com/")
 		}
 	}()
 
