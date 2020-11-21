@@ -2,6 +2,7 @@ package covid_report
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/esvm/if1015covidproject-api/src/api_gateway/context"
@@ -44,7 +45,10 @@ func (api *CovidReportAPI) GetCovidReportsHandler(ctx echo.Context) error {
 	c := context.GetContext(ctx)
 	reports, err := api.covidService.GetCovidReports(c)
 	if err != nil {
-		return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "Covid Report service failed"}
+		return &echo.HTTPError{
+			Code:    http.StatusInternalServerError,
+			Message: fmt.Sprintf("Covid Report service failed: %s", err.Error()),
+		}
 	}
 
 	body, err := json.Marshal(reports)
