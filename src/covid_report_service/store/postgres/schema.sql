@@ -1,5 +1,5 @@
 CREATE TABLE covid_report_brazil_states(
-    id text,
+    id int,
     state text,
     uf text,
     cases bigint,
