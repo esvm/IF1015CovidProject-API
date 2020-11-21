@@ -18,9 +18,7 @@ func (mw loggingMiddleware) InsertCovidReportsBrazil(ctx context.Context, covidR
 	begin := time.Now()
 
 	err := mw.next.InsertCovidReportsBrazil(ctx, covidReport)
-
 	arguments := []interface{}{"method", "InsertCovidReportsBrazil", "err", err, "took", time.Since(begin)}
-
 	level.Debug(mw.logger).Log(arguments...)
 
 	return err
@@ -30,9 +28,7 @@ func (mw loggingMiddleware) InsertCovidReportsCountries(ctx context.Context, cov
 	begin := time.Now()
 
 	err := mw.next.InsertCovidReportsCountries(ctx, covidReport)
-
 	arguments := []interface{}{"method", "InsertCovidReportsCountries", "err", err, "took", time.Since(begin)}
-
 	level.Debug(mw.logger).Log(arguments...)
 
 	return err
@@ -42,9 +38,17 @@ func (mw loggingMiddleware) GetCovidReportsBrazil(ctx context.Context) ([]*covid
 	begin := time.Now()
 
 	res, err := mw.next.GetCovidReportsBrazil(ctx)
-
 	arguments := []interface{}{"method", "GetCovidReportsBrazil", "err", err, "took", time.Since(begin)}
+	level.Debug(mw.logger).Log(arguments...)
 
+	return res, err
+}
+
+func (mw loggingMiddleware) GetCovidReportsBrazilPerDay(ctx context.Context, date *time.Time) ([]*covid_reports.CovidReportBrazilState, error) {
+	begin := time.Now()
+
+	res, err := mw.next.GetCovidReportsBrazilPerDay(ctx, date)
+	arguments := []interface{}{"method", "GetCovidReportsBrazilPerDay", "err", err, "took", time.Since(begin)}
 	level.Debug(mw.logger).Log(arguments...)
 
 	return res, err
@@ -54,9 +58,7 @@ func (mw loggingMiddleware) GetCovidReportsCountries(ctx context.Context) ([]*co
 	begin := time.Now()
 
 	res, err := mw.next.GetCovidReportsCountries(ctx)
-
 	arguments := []interface{}{"method", "GetCovidReportsCountries", "err", err, "took", time.Since(begin)}
-
 	level.Debug(mw.logger).Log(arguments...)
 
 	return res, err

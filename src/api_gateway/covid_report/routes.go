@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/esvm/if1015covidproject-api/src/api_gateway/context"
 	"github.com/esvm/if1015covidproject-api/src/covid_report_service"
@@ -17,7 +18,7 @@ const (
 
 	GetCovidReportsBrazilRoute          = "/brazil"
 	InsertCovidReportsBrazilStatesRoute = "/brazil"
-	GetCovidReportsBrazilPerDayRoute    = "/brazil"
+	GetCovidReportsBrazilPerDayRoute    = "/brazil/:date"
 
 	GetCovidReportsCountriesRoute    = "/countries"
 	InsertCovidReportsCountriesRoute = "/countries"
@@ -37,6 +38,11 @@ func MakeCovidReportRoutes(
 		GetCovidReportsBrazilRoute,
 		api.GetCovidReportsBrazilHandler,
 		instrumentingMiddleware("GetCovidReportsBrazil"),
+	)
+	g.GET(
+		GetCovidReportsBrazilPerDayRoute,
+		api.GetCovidReportsBrazilPerDayHandler,
+		instrumentingMiddleware("GetCovidReportsBrazilPerDay"),
 	)
 	g.POST(
 		InsertCovidReportsBrazilStatesRoute,
@@ -59,6 +65,31 @@ func MakeCovidReportRoutes(
 func (api *CovidReportAPI) GetCovidReportsBrazilHandler(ctx echo.Context) error {
 	c := context.GetContext(ctx)
 	reports, err := api.covidService.GetCovidReportsBrazil(c)
+	if err != nil {
+		return &echo.HTTPError{
+			Code:    http.StatusInternalServerError,
+			Message: fmt.Sprintf("Covid Report service failed: %s", err.Error()),
+		}
+	}
+
+	body, err := json.Marshal(reports)
+	if err != nil {
+		return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "Failed to get covid reports"}
+	}
+
+	return ctx.Blob(http.StatusOK, contentType, body)
+}
+
+func (api *CovidReportAPI) GetCovidReportsBrazilPerDayHandler(ctx echo.Context) error {
+	c := context.GetContext(ctx)
+	date := ctx.Param("date")
+
+	dateTime, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "Failed to parse date"}
+	}
+
+	reports, err := api.covidService.GetCovidReportsBrazilPerDay(c, &dateTime)
 	if err != nil {
 		return &echo.HTTPError{
 			Code:    http.StatusInternalServerError,

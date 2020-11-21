@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"os"
+	"time"
 
 	"github.com/esvm/if1015covidproject-api/src/covid_reports"
 	"github.com/go-kit/kit/log"
@@ -23,6 +24,7 @@ type CovidReportDatabase interface {
 	InsertCovidReportsBrazil([]*covid_reports.CovidReportBrazilState) error
 	InsertCovidReportsCountries([]*covid_reports.CovidReportCountry) error
 	GetCovidReportsBrazil() ([]*covid_reports.CovidReportBrazilState, error)
+	GetCovidReportsBrazilPerDay(*time.Time) ([]*covid_reports.CovidReportBrazilState, error)
 	GetCovidReportsCountries() ([]*covid_reports.CovidReportCountry, error)
 }
 
@@ -98,6 +100,17 @@ func (d covidReportDatabase) GetCovidReportsBrazil() ([]*covid_reports.CovidRepo
 
 	covidReports := []*covid_reports.CovidReportBrazilState{}
 	if err := db.Model(&covidReports).Select(); err != nil {
+		return nil, errors.Wrap(err, "Failed to select Covid Reports")
+	}
+
+	return covidReports, nil
+}
+
+func (d covidReportDatabase) GetCovidReportsBrazilPerDay(date *time.Time) ([]*covid_reports.CovidReportBrazilState, error) {
+	db := d.GetConnection()
+
+	covidReports := []*covid_reports.CovidReportBrazilState{}
+	if err := db.Model(&covidReports).Where("updated_at >= ?", date).OrderExpr("updated_at desc").Select(); err != nil {
 		return nil, errors.Wrap(err, "Failed to select Covid Reports")
 	}
 

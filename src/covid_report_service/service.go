@@ -2,6 +2,7 @@ package covid_report_service
 
 import (
 	"context"
+	"time"
 
 	"github.com/esvm/if1015covidproject-api/src/covid_report_service/store"
 	"github.com/esvm/if1015covidproject-api/src/covid_reports"
@@ -12,6 +13,7 @@ type CovidReportService interface {
 	InsertCovidReportsBrazil(context.Context, []*covid_reports.CovidReportBrazilState) error
 	InsertCovidReportsCountries(context.Context, []*covid_reports.CovidReportCountry) error
 	GetCovidReportsBrazil(context.Context) ([]*covid_reports.CovidReportBrazilState, error)
+	GetCovidReportsBrazilPerDay(context.Context, *time.Time) ([]*covid_reports.CovidReportBrazilState, error)
 	GetCovidReportsCountries(context.Context) ([]*covid_reports.CovidReportCountry, error)
 }
 
@@ -36,6 +38,10 @@ func (s basicService) InsertCovidReportsCountries(ctx context.Context, reports [
 
 func (s basicService) GetCovidReportsBrazil(ctx context.Context) ([]*covid_reports.CovidReportBrazilState, error) {
 	return s.store.GetCovidReportsBrazil()
+}
+
+func (s basicService) GetCovidReportsBrazilPerDay(ctx context.Context, date *time.Time) ([]*covid_reports.CovidReportBrazilState, error) {
+	return s.store.GetCovidReportsBrazilPerDay(date)
 }
 
 func (s basicService) GetCovidReportsCountries(ctx context.Context) ([]*covid_reports.CovidReportCountry, error) {
