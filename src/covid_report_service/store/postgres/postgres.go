@@ -98,8 +98,10 @@ func (d covidReportDatabase) InsertCovidReportsCountries(covidReports []*covid_r
 func (d covidReportDatabase) GetCovidReportsBrazil() ([]*covid_reports.CovidReportBrazilState, error) {
 	db := d.GetConnection()
 
+	sevenDaysBefore := time.Now().AddDate(0, 0, -7)
+
 	covidReports := []*covid_reports.CovidReportBrazilState{}
-	if err := db.Model(&covidReports).Select(); err != nil {
+	if err := db.Model(&covidReports).Where("updated_at > ?", sevenDaysBefore).Select(); err != nil {
 		return nil, errors.Wrap(err, "Failed to select Covid Reports")
 	}
 
@@ -120,8 +122,10 @@ func (d covidReportDatabase) GetCovidReportsBrazilPerDay(date *time.Time) ([]*co
 func (d covidReportDatabase) GetCovidReportsCountries() ([]*covid_reports.CovidReportCountry, error) {
 	db := d.GetConnection()
 
+	sevenDaysBefore := time.Now().AddDate(0, 0, -7)
+
 	covidReports := []*covid_reports.CovidReportCountry{}
-	if err := db.Model(&covidReports).Select(); err != nil {
+	if err := db.Model(&covidReports).Where("updated_at > ?", sevenDaysBefore).Select(); err != nil {
 		return nil, errors.Wrap(err, "Failed to select Covid Reports")
 	}
 
